@@ -25,6 +25,8 @@ static FAVICON_PNG: &[u8] = include_bytes!("../../front-end/images/favicon.png")
 static FAVICON_SVG: &[u8] = include_bytes!("../../front-end/images/favicon.svg");
 static JS: &[u8] = include_bytes!("../../front-end/js/book.js");
 static HIGHLIGHT_JS: &[u8] = include_bytes!("../../front-end/js/highlight.js");
+static AUTH_JS: &[u8] = include_bytes!("../../front-end/js/auth.js");
+static BCRYPT_JS: &[u8] = include_bytes!("../../front-end/js/bcrypt.min.js");
 static TOMORROW_NIGHT_CSS: &[u8] = include_bytes!("../../front-end/css/tomorrow-night.css");
 static HIGHLIGHT_CSS: &[u8] = include_bytes!("../../front-end/css/highlight.css");
 static AYU_HIGHLIGHT_CSS: &[u8] = include_bytes!("../../front-end/css/ayu-highlight.css");
@@ -58,6 +60,8 @@ pub struct Theme {
     pub(crate) ayu_highlight_css: Vec<u8>,
     pub(crate) highlight_js: Vec<u8>,
     pub(crate) clipboard_js: Vec<u8>,
+    pub(crate) auth_js: Vec<u8>,
+    pub(crate) bcrypt_js: Vec<u8>,
 }
 
 impl Theme {
@@ -91,6 +95,8 @@ impl Theme {
                 ),
                 (theme_dir.join("highlight.js"), &mut theme.highlight_js),
                 (theme_dir.join("clipboard.min.js"), &mut theme.clipboard_js),
+                (theme_dir.join("auth.js"), &mut theme.auth_js),
+                (theme_dir.join("bcrypt.min.js"), &mut theme.bcrypt_js),
                 (theme_dir.join("highlight.css"), &mut theme.highlight_css),
                 (
                     theme_dir.join("tomorrow-night.css"),
@@ -220,6 +226,8 @@ impl Default for Theme {
             ayu_highlight_css: AYU_HIGHLIGHT_CSS.to_owned(),
             highlight_js: HIGHLIGHT_JS.to_owned(),
             clipboard_js: CLIPBOARD_JS.to_owned(),
+            auth_js: AUTH_JS.to_owned(),
+            bcrypt_js: BCRYPT_JS.to_owned(),
         }
     }
 }
@@ -277,6 +285,8 @@ mod tests {
             "highlight.css",
             "ayu-highlight.css",
             "clipboard.min.js",
+            "auth.js",
+            "bcrypt.min.js",
         ];
 
         let temp = TempFileBuilder::new().prefix("mdbook-").tempdir().unwrap();
@@ -311,6 +321,8 @@ mod tests {
             ayu_highlight_css: Vec::new(),
             highlight_js: Vec::new(),
             clipboard_js: Vec::new(),
+            auth_js: Vec::new(),
+            bcrypt_js: Vec::new(),
         };
 
         assert_eq!(got, empty);

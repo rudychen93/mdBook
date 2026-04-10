@@ -364,6 +364,25 @@ impl Renderer for HtmlHandlebars {
 
         let mut static_files = StaticFiles::new(&theme, &html_config, &ctx.root)?;
 
+        // Add auth.js if password protection is enabled
+        if html_config.password.enable && !html_config.password.users.is_empty() {
+            let users: Vec<_> = html_config
+                .password
+                .users
+                .iter()
+                .map(|u| {
+                    serde_json::json!({
+                        "username": u.username,
+                        "hash": u.hash
+                    })
+                })
+                .collect();
+            data.insert("auth_enabled".to_owned(), json!(true));
+            // Must use String to avoid Handlebars calling Debug format on serde_json::Value
+            data.insert("auth_users".to_owned(), json!(users).to_string().into());
+            static_files.add_builtin("auth.js", &theme.auth_js);
+        }
+
         // Render search index
         #[cfg(feature = "search")]
         {

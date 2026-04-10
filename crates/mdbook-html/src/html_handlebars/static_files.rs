@@ -61,6 +61,7 @@ impl StaticFiles {
         this.add_builtin("ayu-highlight.css", &theme.ayu_highlight_css);
         this.add_builtin("highlight.js", &theme.highlight_js);
         this.add_builtin("clipboard.min.js", &theme.clipboard_js);
+        this.add_builtin("bcrypt.min.js", &theme.bcrypt_js);
         if theme.fonts_css.is_none() {
             this.add_builtin("fonts/fonts.css", theme::fonts::CSS);
             for (file_name, contents) in theme::fonts::LICENSES.iter() {
@@ -288,6 +289,8 @@ mod tests {
             ayu_highlight_css: Vec::new(),
             highlight_js: Vec::new(),
             clipboard_js: Vec::new(),
+            auth_js: Vec::new(),
+            bcrypt_js: Vec::new(),
             toc_js: Vec::new(),
             toc_html: Vec::new(),
             fonts_css: None,

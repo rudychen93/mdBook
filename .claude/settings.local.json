@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(/opt/homebrew/bin/cargo test:*)",
+      "Bash(/opt/homebrew/bin/cargo build:*)",
+      "Bash(/opt/homebrew/bin/cargo clean:*)"
+    ]
+  }
+}
