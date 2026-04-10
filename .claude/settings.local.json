@@ -3,8 +3,7 @@
     "allow": [
       "Bash(/opt/homebrew/bin/cargo test:*)",
       "Bash(/opt/homebrew/bin/cargo build:*)",
-      "Bash(/opt/homebrew/bin/cargo clean:*)",
-      "Bash(/Users/chenyuejin/github/mdBook/target/debug/mdbook build:*)"
+      "Bash(/opt/homebrew/bin/cargo clean:*)"
     ]
   }
 }
