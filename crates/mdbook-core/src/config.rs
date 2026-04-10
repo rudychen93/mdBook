@@ -424,6 +424,28 @@ pub struct RustConfig {
     pub edition: Option<RustEdition>,
 }
 
+/// Configuration for password protection.
+#[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(default, rename_all = "kebab-case", deny_unknown_fields)]
+#[non_exhaustive]
+pub struct Password {
+    /// Whether password protection is enabled.
+    pub enable: bool,
+    /// List of users allowed to access the book.
+    pub users: Vec<User>,
+}
+
+/// A user allowed to access a password-protected book.
+#[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(default, rename_all = "kebab-case", deny_unknown_fields)]
+#[non_exhaustive]
+pub struct User {
+    /// The username for authentication.
+    pub username: String,
+    /// The bcrypt hash of the password.
+    pub hash: String,
+}
+
 /// Rust edition to use for the code.
 #[derive(Debug, Copy, Clone, PartialEq, Serialize, Deserialize)]
 #[non_exhaustive]
@@ -518,6 +540,8 @@ pub struct HtmlConfig {
     /// If enabled, the sidebar includes navigation for headers on the current
     /// page. Default is `true`.
     pub sidebar_header_nav: bool,
+    /// Password protection settings.
+    pub password: Password,
 }
 
 impl Default for HtmlConfig {
@@ -548,6 +572,7 @@ impl Default for HtmlConfig {
             redirect: HashMap::new(),
             hash_files: true,
             sidebar_header_nav: true,
+            password: Password::default(),
         }
     }
 }

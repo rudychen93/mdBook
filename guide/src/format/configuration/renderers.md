@@ -111,6 +111,9 @@ site-url = "/example-book/"
 cname = "myproject.rs"
 input-404 = "not-found.md"
 sidebar-header-nav = true
+
+[output.html.password]
+enable = false
 ```
 
 The following configuration options are available:
@@ -170,6 +173,7 @@ The following configuration options are available:
   Static CSS and JS files can reference each other using `{{ resource "filename" }}` directives.
   Defaults to `true`.
 - **sidebar-header-nav:** If `true`, the sidebar will contain navigation for headers on the current page. Default is `true`.
+- **password:** Password protection settings. See [`[output.html.password]`](#outputhtmlpassword) section.
 
 [custom domain]: https://docs.github.com/en/github/working-with-github-pages/managing-a-custom-domain-for-your-github-pages-site
 
@@ -296,6 +300,88 @@ The [`output.html.search.chapter`] table provides the ability to modify search s
 ```
 
 - **enable:** Enables or disables search indexing for the given chapters. Defaults to `true`. This does not override the overall `output.html.search.enable` setting; that must be `true` for any search functionality to be enabled. Be cautious when disabling indexing for chapters because that can potentially lead to user confusion when they search for terms and expect them to be found. This should only be used in exceptional circumstances where keeping the chapter in the index will cause issues with the quality of the search results.
+
+### `[output.html.password]`
+
+The `[output.html.password]` table provides password protection for your book.
+When enabled, visitors must enter valid credentials to access the content.
+This uses client-side authentication with bcrypt-hashed passwords.
+
+```toml
+[output.html.password]
+enable = true
+
+[[output.html.password.users]]
+username = "admin"
+hash = "$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyYfN3F0JKXG"
+
+[[output.html.password.users]]
+username = "editor"
+hash = "$2b$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uSyWCfBJi"
+```
+
+- **enable:** Whether password protection is enabled. Defaults to `false`.
+- **users:** A list of users allowed to access the book.
+
+#### User configuration
+
+Each user entry requires:
+
+- **username:** The username for authentication.
+- **hash:** The bcrypt hash of the user's password (not the plaintext password).
+
+#### Generating bcrypt hashes
+
+You need to generate bcrypt hashes for your passwords. Here are a few methods:
+
+**Using Node.js:**
+
+```bash
+node -e "const bcrypt = require('bcrypt'); bcrypt.hash('your-password', 12, (err, hash) => console.log(hash));"
+```
+
+**Using Python:**
+
+```bash
+python3 -c "import bcrypt; print(bcrypt.hashpw(b'your-password', bcrypt.gensalt()).decode())"
+```
+
+**Using an online generator (for testing only):**
+
+Visit https://bcrypt-generator.com/ to generate hashes.
+
+#### How it works
+
+When password protection is enabled:
+
+1. A login overlay appears when visitors access the book
+2. Users enter their username and password
+3. The password is verified against the bcrypt hashes using `bcrypt.js` (loaded from CDN)
+4. On success, a session is stored in `sessionStorage` (persists until the browser tab is closed)
+5. On page reload, the session remains valid for 24 hours
+
+#### Customizing the auth script
+
+To customize the authentication behavior, you can provide your own `auth.js` file in the theme directory:
+
+```bash
+mkdir -p theme
+# Copy and modify auth.js from the default theme
+cp $(rustup show home)/.rustup/toolchains/*/lib/rustlib/src/rust/library/std/theme/auth.js theme/
+```
+
+#### Limitations
+
+This is **client-side authentication**:
+
+- Password hashes are visible in the page source
+- Determined users can extract hashes and attempt brute-force attacks
+- For stronger security, deploy behind a server with proper authentication (e.g., nginx basic auth, Cloudflare Access, GitHub Pages with access restrictions)
+
+This feature is suitable for:
+- Keeping casual visitors out
+- Preventing search engine indexing
+- Basic access control for internal documentation
 
 ### `[output.html.redirect]`
 

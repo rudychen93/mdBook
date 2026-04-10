@@ -61,6 +61,12 @@
         </script>
         <!-- Start loading toc.js asap -->
         <script src="{{ resource "toc.js" }}"></script>
+
+        {{#if auth_enabled}}
+        <script>
+            window.MDBOOK_AUTH_USERS = {{{ auth_users }}};
+        </script>
+        {{/if}}
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -181,6 +187,11 @@
                         <a href="{{git_repository_edit_url}}" title="Suggest an edit" aria-label="Suggest an edit" rel="edit">
                             {{fa "solid" "pencil" "git-edit-button"}}
                         </a>
+                        {{/if}}
+                        {{#if auth_enabled}}
+                        <button id="mdbook-logout" class="icon-button" type="button" title="Logout" aria-label="Logout" onclick="mdbookLogout()">
+                            {{fa "solid" "right-from-bracket"}}
+                        </button>
                         {{/if}}
 
                     </div>
@@ -323,6 +334,11 @@
         <script src="{{ resource "clipboard.min.js" }}"></script>
         <script src="{{ resource "highlight.js" }}"></script>
         <script src="{{ resource "book.js" }}"></script>
+
+        {{#if auth_enabled}}
+        <script src="{{ resource "bcrypt.min.js" }}"></script>
+        <script src="{{ resource "auth.js" }}"></script>
+        {{/if}}
 
         <!-- Custom JS scripts -->
         {{#each additional_js}}
