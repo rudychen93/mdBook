@@ -13,7 +13,7 @@ use tracing::{error, info};
 
 mod cmd;
 
-const VERSION: &str = concat!("v", clap::crate_version!());
+const VERSION: &str = concat!("mdbook v", clap::crate_version!(), "-login");
 
 fn main() {
     init_logger();
